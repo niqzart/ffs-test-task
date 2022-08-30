@@ -20,4 +20,4 @@ def init_users(session):
 init_users()
 
 if __name__ == "__main__":  # test only
-    socketio.run(app=app)
+    socketio.run(app=app, debug=True)

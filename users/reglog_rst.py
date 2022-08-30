@@ -69,5 +69,5 @@ class Logout(Resource):
     @controller.jwt_authorizer(User, check_only=True)
     @controller.removes_authorization()
     def post(self, session):
-        BlockedToken.create(session, get_jwt()["jti"])
+        BlockedToken.create(session, jti=get_jwt()["jti"])
         return True
