@@ -2,7 +2,7 @@ from common import sessionmaker, db_url, db_meta, TEST_USERNAME, TEST_PASSWORD
 from main import app, socketio
 
 if db_url == "sqlite:///app.db":
-    db_meta.drop_all()
+    # db_meta.drop_all()
     db_meta.create_all()
 
 if db_url == "sqlite:///test.db":
@@ -17,7 +17,7 @@ def init_users(session):
         User.create(session, TEST_USERNAME, TEST_PASSWORD)
 
 
-init_users()
+# init_users()
 
 if __name__ == "__main__":  # test only
     socketio.run(app=app, debug=True)
