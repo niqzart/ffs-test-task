@@ -1,6 +1,7 @@
 -r __lib__/requirements.txt
 
 alembic
+flask_sqlalchemy
 eventlet==0.30.2
 gevent-websocket==0.10.1
 greenlet==1.1.2

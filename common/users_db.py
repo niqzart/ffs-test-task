@@ -5,7 +5,7 @@ from sqlalchemy import Column, select
 from sqlalchemy.sql.sqltypes import Integer, String
 
 from __lib__.flask_fullstack import UserRole, PydanticModel, Identifiable
-from .config import Base, sessionmaker
+from .config import Base, db
 
 
 class BlockedToken(Base):
@@ -15,8 +15,8 @@ class BlockedToken(Base):
     jti = Column(String(36), nullable=False)
 
     @classmethod
-    def find_by_jti(cls, session: sessionmaker, jti) -> BlockedToken | None:
-        return session.get_first(select(cls).filter_by(jti=jti))
+    def find_by_jti(cls, jti) -> BlockedToken | None:
+        return db.session.get_first(select(cls).filter_by(jti=jti))
 
 
 class User(Base, UserRole, Identifiable):
@@ -40,20 +40,20 @@ class User(Base, UserRole, Identifiable):
     MainData = PydanticModel.column_model(id, username)
 
     @classmethod
-    def find_by_id(cls, session: sessionmaker, entry_id: int) -> User | None:
-        return session.get_first(select(cls).filter_by(id=entry_id))
+    def find_by_id(cls, entry_id: int) -> User | None:
+        return db.session.get_first(select(cls).filter_by(id=entry_id))
 
     @classmethod
-    def find_by_identity(cls, session, identity: int) -> User | None:
-        return cls.find_by_id(session, identity)
+    def find_by_identity(cls, identity: int) -> User | None:
+        return cls.find_by_id(identity)
 
     @classmethod
-    def find_by_username(cls, session, username: str) -> User | None:
-        return session.get_first(select(cls).filter_by(username=username))
+    def find_by_username(cls, username: str) -> User | None:
+        return db.session.get_first(select(cls).filter_by(username=username))
 
     @classmethod
-    def create(cls, session: sessionmaker, username: str, password: str) -> User | None:
-        return super().create(session, username=username, password=cls.generate_hash(password))
+    def create(cls, username: str, password: str) -> User | None:
+        return super().create(username=username, password=cls.generate_hash(password))
 
     def get_identity(self):
         return self.id

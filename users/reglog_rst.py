@@ -4,9 +4,9 @@ from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
 
 from __lib__.flask_fullstack import ResourceController
-from common import sessionmaker, User, BlockedToken, TEST_USERNAME
+from common import User, BlockedToken, TEST_USERNAME
 
-controller = ResourceController("reglog", sessionmaker=sessionmaker, path="/")
+controller = ResourceController("reglog", path="/")
 
 auth_parser: RequestParser = RequestParser()
 auth_parser.add_argument("username", type=str, required=True)
@@ -16,14 +16,13 @@ auth_parser.add_argument("password", type=str, required=True)
 @controller.route("/sign-up/")
 class Registration(Resource):
     @controller.doc_abort("200 ", "Username already in use")
-    @controller.with_begin
     @controller.argument_parser(auth_parser)
     @controller.marshal_with_authorization(User.MainData)
-    def post(self, session, username: str, password: str):
-        if User.find_by_username(session, username) is not None:
+    def post(self, username: str, password: str):
+        if User.find_by_username(username) is not None:
             return "Username already in use"
 
-        user = User.create(session, username, password)
+        user = User.create(username, password)
         return user, user
 
 
@@ -31,11 +30,10 @@ class Registration(Resource):
 class Authorization(Resource):
     @controller.doc_abort("200 ", "User doesn't exist")
     @controller.doc_abort(" 200", "Wrong password")
-    @controller.with_begin
     @controller.argument_parser(auth_parser)
     @controller.marshal_with_authorization(User.MainData)
-    def post(self, session, username: str, password: str):
-        if (user := User.find_by_username(session, username)) is None:
+    def post(self, username: str, password: str):
+        if (user := User.find_by_username(username)) is None:
             return "User doesn't exist"
 
         if User.verify_hash(password, user.password):
@@ -45,7 +43,7 @@ class Authorization(Resource):
 
 @controller.route("/home/")
 class HomeData(Resource):
-    @controller.jwt_authorizer(User, use_session=False)
+    @controller.jwt_authorizer(User)
     @controller.marshal_with(User.MainData)
     def get(self, user: User):
         return user
@@ -53,14 +51,13 @@ class HomeData(Resource):
 
 @controller.route("/go/")
 class Test(Resource):
-    @controller.with_begin
     @controller.marshal_with_authorization(User.MainData)
-    def get(self, session):
+    def get(self):
         """ Localhost-only endpoint for logging in from the docs """
         if not current_app.debug:
             return {"a": False}
 
-        user = User.find_by_username(session, TEST_USERNAME)
+        user = User.find_by_username(TEST_USERNAME)
         return user, user
 
 
@@ -68,6 +65,6 @@ class Test(Resource):
 class Logout(Resource):
     @controller.jwt_authorizer(User, check_only=True)
     @controller.removes_authorization()
-    def post(self, session):
-        BlockedToken.create(session, jti=get_jwt()["jti"])
+    def post(self):
+        BlockedToken.create(jti=get_jwt()["jti"])
         return True
