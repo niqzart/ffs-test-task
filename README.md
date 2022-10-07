@@ -5,7 +5,7 @@
 - [Ссылки](#Ссылки)
 
 ## Описание
-Репозиторий-заготовка для выполнения тестового задания для вступления в команду бэкенда. Призван погрузить сразу в веб-разработку с ORM и наработками внутри и вокруг проекта.
+Репозиторий-заготовка для выполнения тестового задания для вступления в команду бэкенда. Призван погрузить в стек проекта, познакомить с используемыми библиотеками, в том числе внутрипроектными.
 
 ### Стек
 - Язык программирования: [Python](https://www.python.org/downloads/) 3.9+
@@ -22,7 +22,7 @@
 git submodule init
 git submodule update
 ```
-4. Создать виртуальное окружение
+4. Создать виртуальное окружение **на python 3.9**
 5. Установить зависимости:
 ```sh
 pip install -r requirements.txt
@@ -38,12 +38,12 @@ pip install -r requirements.txt
 ## Рекомендации
 ### Flask-Fullstack
 В проекте во всю мощь используется библиотека flask-fullstack (FFS), которая подгружена в проекте в виде submodule-я \_\_lib\_\_. В ней есть частичная документация, но вот пример использования вытащить из проекта не удалось. Стоит прочитать документацию в файлах:
-- [Интерфейсы для БД](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/interfaces.py)
-- [.database_searcher](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/mixins.py#L53)
-- [.jwt_authorizer](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/mixins.py#L121)
-- [ResourceController + его методы](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/restx.py#L23)
+- [Интерфейсы для БД](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/interfaces.py)
+- [.database_searcher](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/mixins.py#L49)
+- [.jwt_authorizer](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/mixins.py#L120)
+- [ResourceController + его методы](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/restx/controller.py)
 
-Понимание flask-restx и sqlalchemy сильно поможет в понимании ffs, уже с этими знаниями можно почитать информационный материал ниже:
+Знание flask-restx и sqlalchemy сильно поможет в понимании ffs, уже с этими знаниями можно почитать информационный материал ниже:
 
 <details>
   <summary>FFS: Порядок декораторов</summary>
@@ -52,7 +52,6 @@ pip install -r requirements.txt
 
   - все декораторы документации параметров запроса
   - все декораторы документации формата ответов
-  - декораторы сессии (`with_session` или `with_auto_session`)
   - декоратор авторизации (`.jwt_authorizer`)
   - декоратор парсинга аргументов (`.argument_parser`)
   - декоратор(-ы) поиска объектов в бд (`.database_searcher`)
@@ -62,9 +61,9 @@ pip install -r requirements.txt
 <details>
   <summary>FFS: Shortcut-ы для БД</summary>
 
-  К объектам класса `sessionmaker` (ранее `Session`), которые по всему репозиторию обычно называются просто `session` добавлено несколько методов, упрощающих работу с логикой БД. По сути это простые shortcut-ы. Все их можно увидеть [тут](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/sqlalchemy.py#L15)
+  К объекту `db.session` добавлено несколько методов, упрощающих работу с логикой БД. По сути это простые shortcut-ы. Все их можно увидеть [тут](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/utils/sqlalchemy.py#L21)
 
-  Ко всем классам, наследующим Base, теперь добавляется набор полезных методов, которые могут значительно уменьшить объём работы. Они создаются и документированы [тут](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/sqlalchemy.py#L84)
+  Ко всем классам, наследующим `Base` (именно `Base` из `common`, не `db.Model`!) теперь добавляется набор полезных методов, которые могут значительно уменьшить объём работы. Они создаются и документированы [тут](https://github.com/niqzart/ffs-test-task/blob/main/common/config.py#L67)
 
 </details>
 
@@ -84,6 +83,14 @@ pip install -r requirements.txt
   - Модели объявляются в теле класса, наследующего Base!
   - Названия переменных нужно держать в `snake_case`, для json-а они будут автоматически конвертированы в `kebab-case`
   - Регистрировать новые модели не нужно, достаточно просто использовать их в методах, вроде `.marshal_with` или `.lister`
+
+</details>
+
+<details>
+    <summary>FFS: SocketIO</summary>
+
+    Частично задокументированно [внутри проекта](https://github.com/xi-effect/xieffect-backend/pull/110), более отделённая документация появится позже...
+
 </details>
 
 ### Стиль кода
