@@ -87,9 +87,9 @@ pip install -r requirements.txt
 </details>
 
 <details>
-    <summary>FFS: SocketIO</summary>
+  <summary>FFS: SocketIO</summary>
 
-    Частично задокументированно [внутри проекта](https://github.com/xi-effect/xieffect-backend/pull/110), более отделённая документация появится позже...
+  Частично задокументированно [внутри проекта](https://github.com/xi-effect/xieffect-backend/pull/110), более отделённая документация появится позже...
 
 </details>
 
