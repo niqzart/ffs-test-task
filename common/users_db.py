@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from flask_fullstack import UserRole, PydanticModel, Identifiable
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy import Column, select
 from sqlalchemy.sql.sqltypes import Integer, String
 
-from __lib__.flask_fullstack import UserRole, PydanticModel, Identifiable
 from .config import Base, db
 
 

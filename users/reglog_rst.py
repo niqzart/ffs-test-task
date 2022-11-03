@@ -1,9 +1,9 @@
 from flask import current_app
+from flask_fullstack import ResourceController
 from flask_jwt_extended import get_jwt
 from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
 
-from __lib__.flask_fullstack import ResourceController
 from common import User, BlockedToken, TEST_USERNAME
 
 controller = ResourceController("reglog", path="/")

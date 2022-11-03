@@ -5,6 +5,7 @@ from sys import modules
 from typing import TypeVar
 
 from dotenv import load_dotenv
+from flask_fullstack import Flask, Session, ModBaseMeta
 from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy, Model
 from sqlalchemy import MetaData, select
 from sqlalchemy.orm import scoped_session, declarative_base
@@ -14,8 +15,6 @@ try:
     from greenlet import getcurrent as _ident_func
 except ImportError:
     from threading import get_ident as _ident_func
-
-from __lib__.flask_fullstack import Flask, Session, ModBaseMeta
 
 load_dotenv(".env")
 

@@ -11,37 +11,30 @@
 - Язык программирования: [Python](https://www.python.org/downloads/) 3.9+
 - ORM-система: [SQLAlchemy](https://www.sqlalchemy.org/) 1.4/2.0+
 - Микро-фреймворк: [Flask](https://flask.palletsprojects.com/en/2.2.x/) 2.0+
-- При участии: [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html) и [Flask-JWT-Extended](https://flask-jwt-extended.readthedocs.io/en/stable/)
-- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack)
+- При участии: [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html)
+- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.4.8
 
 ### Начало и установка
 1. Создать публичный fork репозитория
 2. Склонировать репозиторий себе
-3. Инициализировать субмодули (запускать в папке проекта):
-```sh
-git submodule init
-git submodule update
-```
-4. Создать виртуальное окружение **на python 3.9**
-5. Установить зависимости:
+3. Создать виртуальное окружение **на python 3.9**
+4. Установить зависимости:
 ```sh
 pip install -r requirements.txt
 ```
-6. Запусить файл `app.py`, можно создать Run Configuration на его запуск
-7. Проверить, документация работает: [http://localhost:5000/doc/](http://localhost:5000/doc/)
-
-**Делать изменения в папке `__lib__` не нужно, коммитить их — тем более**
+5. Запусить файл `app.py`, можно создать Run Configuration на его запуск
+6. Проверить, документация работает: [http://localhost:5000/doc/](http://localhost:5000/doc/)
 
 ## Задание
 Само задание будет кастомизированно для каждого!
 
 ## Рекомендации
 ### Flask-Fullstack
-В проекте во всю мощь используется библиотека flask-fullstack (FFS), которая подгружена в проекте в виде submodule-я \_\_lib\_\_. В ней есть частичная документация, но вот пример использования вытащить из проекта не удалось. Стоит прочитать документацию в файлах:
-- [Интерфейсы для БД](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/interfaces.py)
-- [.database_searcher](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/mixins.py#L49)
-- [.jwt_authorizer](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/base/mixins.py#L120)
-- [ResourceController + его методы](https://github.com/niqzart/flask-fullstack/blob/93d3c6696c33171315c078ab88c68ca7f7094361/flask_fullstack/restx/controller.py)
+В проекте во всю мощь используется библиотека flask-fullstack (FFS). В ней есть частичная документация, но вот пример использования вытащить из проекта не удалось. Стоит прочитать документацию в файлах:
+- [Интерфейсы для БД](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/interfaces.py)
+- [.database_searcher](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/mixins.py#L48)
+- [.jwt_authorizer](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/mixins.py#L96)
+- [ResourceController + его методы](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/restx/controller.py)
 
 Знание flask-restx и sqlalchemy сильно поможет в понимании ffs, уже с этими знаниями можно почитать информационный материал ниже:
 
