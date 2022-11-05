@@ -89,7 +89,7 @@ class Base(db.Model):  # TODO this is just an idea, redo
 
     @classmethod
     def find_paginated_by_kwargs(
-        cls: type[t], offset: int, limit: int, *order_by, **kwargs
+            cls: type[t], offset: int, limit: int, *order_by, **kwargs
     ) -> list[t]:
         return db.session.get_paginated(
             cls.select_by_kwargs(*order_by, **kwargs), offset, limit

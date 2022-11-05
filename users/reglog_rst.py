@@ -68,3 +68,9 @@ class Logout(Resource):
     def post(self):
         BlockedToken.create(jti=get_jwt()["jti"])
         return True
+
+
+@controller.route("/hello/")
+class SecondTest(Resource):
+    def get(self):
+        return {"hello": "hello"}

@@ -26,5 +26,5 @@ with app.app_context():
     init_users()
     db.session.commit()
 
-if __name__ == "__main__":  # test only
+if __name__ == "__main__":
     socketio.run(app=app, debug=True)
