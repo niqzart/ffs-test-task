@@ -49,7 +49,7 @@ class SQLAlchemy(_SQLAlchemy):
         )
 
 
-db_url: str = getenv("DB_LINK", "sqlite:///../app.db")
+db_url: str = getenv("DB_LINK", "sqlite:///../test.db")
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db_meta = MetaData(naming_convention=convention)

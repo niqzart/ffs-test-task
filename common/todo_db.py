@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from flask_fullstack import PydanticModel
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
@@ -9,7 +10,7 @@ from .config import Base
 class TaskTodo(Base):
     __tablename__ = "task_todo"
 
-    id = Column(Integer, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(36), nullable=False)
     target = Column(Text, nullable=True)
     is_ready = Column(Boolean, default=False)
@@ -27,10 +28,12 @@ class TaskTodo(Base):
 class CategoryTodo(Base):
     __tablename__ = "category_todo"
 
-    id = Column(Integer, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(36), nullable=False)
 
     task_todo = relationship("TaskTodo", back_populates="category_todo")
+
+    MainData = PydanticModel.column_model(id, name)
 
     def __repr__(self):
         return f"name={self.name!r}"
