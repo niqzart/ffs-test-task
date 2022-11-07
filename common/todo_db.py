@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from typing import TypeVar
 from flask_fullstack import PydanticModel
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .config import Base
+from common import db
+
+t = TypeVar("t", bound="Tasks")
 
 
 class TaskTodo(Base):
@@ -26,12 +30,18 @@ class TaskTodo(Base):
         end_task, category_id, user_id
     )
 
+    @classmethod
+    def get_all(cls: type[t]) -> list[t]:
+        return db.session.query(cls).join(cls.category_todo).all()
+
     def __repr__(self):
         return f"name={self.name!r}"
 
 
 class CategoryTodo(Base):
     __tablename__ = "category_todo"
+
+    not_found_text = "Category does not exist"
 
     id: Column = Column(Integer, primary_key=True)
     name: Column = Column(String(36), nullable=False)

@@ -6,7 +6,7 @@ from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser
 from datetime import datetime
 
-from common import TaskTodo as Task, User
+from common import TaskTodo as Task, User, TaskTodo
 
 controller = ResourceController(name="tasks", path="/tasks/")
 
@@ -37,4 +37,9 @@ class TodoTasks(Resource):
                 category_id=kwargs['category_id'],
                 user_id=session['user_id']
             )
-        return task
+        return task, 205
+
+    @controller.jwt_authorizer(User, check_only=True)
+    @controller.marshal_list_with(Task.MainData)
+    def get(self):
+        return Task.get_all(), 200
