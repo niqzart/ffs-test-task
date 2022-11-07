@@ -34,6 +34,13 @@ class TaskTodo(Base):
     def get_all(cls: type[t]) -> list[t]:
         return db.session.query(cls).join(cls.category_todo).all()
 
+    @staticmethod
+    def change_values(task, **kwargs):
+        for key, value in kwargs.items():
+            if value is not None and key != 'task_name':
+                setattr(task, key, value)
+        return task
+
     def __repr__(self):
         return f"name={self.name!r}"
 

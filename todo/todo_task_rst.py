@@ -43,3 +43,22 @@ class TodoTasks(Resource):
     @controller.marshal_list_with(Task.MainData)
     def get(self):
         return Task.get_all(), 200
+
+
+@controller.route("task/<string:task_name>")
+class TodoTask(Resource):
+
+    @controller.jwt_authorizer(User, check_only=True)
+    @controller.marshal_with(Task.MainData)
+    def get(self, task_name):
+        if not (task := Task.find_first_by_kwargs(name=task_name)) is None:
+            return task
+        controller.abort(404, "todo not found")
+
+    @controller.jwt_authorizer(User, check_only=True)
+    @controller.argument_parser(task_parser)
+    @controller.marshal_with(Task.MainData)
+    def patch(self, **kwargs):
+        if (task := Task.find_first_by_kwargs(name=kwargs['task_name'])) is None:
+            controller.abort(404, "todo not found")
+        return Task.change_values(task, **kwargs)
