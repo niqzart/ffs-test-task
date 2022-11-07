@@ -76,3 +76,4 @@ class TodoDetailTask(Resource):
             controller.abort(404, self.error_message)
         task.delete()
         return "task was deleted"
+
