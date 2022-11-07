@@ -3,6 +3,7 @@ from flask_fullstack import ResourceController
 from flask_jwt_extended import get_jwt
 from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
+from flask import request, session
 
 from common import User, BlockedToken, TEST_USERNAME
 
@@ -37,6 +38,7 @@ class Authorization(Resource):
             return "User doesn't exist"
 
         if User.verify_hash(password, user.password):
+            session["user_id"] = user.id
             return user, user
         return "Wrong password"
 
@@ -45,7 +47,7 @@ class Authorization(Resource):
 class HomeData(Resource):
     @controller.jwt_authorizer(User)
     @controller.marshal_with(User.MainData)
-    def get(self, user: User):
+    def get(self, user: User) -> User:
         return user
 
 

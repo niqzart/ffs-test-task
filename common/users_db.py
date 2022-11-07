@@ -35,9 +35,9 @@ class User(Base, UserRole, Identifiable):
         return pbkdf2_sha256.verify(password, hashed)
 
     # Vital:
-    id = Column(Integer, primary_key=True)
-    username = Column(String(100), unique=True, nullable=False)
-    password = Column(String(100), nullable=False)
+    id: Column = Column(Integer, primary_key=True)
+    username: Column = Column(String(100), unique=True, nullable=False)
+    password: Column = Column(String(100), nullable=False)
 
     task_todo = relationship(TaskTodo)
 
