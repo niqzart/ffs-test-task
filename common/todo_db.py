@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 from .config import Base
 from common import db
 
-t = TypeVar("t", bound="Tasks")
+t = TypeVar("t", bound="TaskTodo")
 
 
 class TaskTodo(Base):
@@ -31,11 +31,11 @@ class TaskTodo(Base):
     )
 
     @classmethod
-    def get_all(cls: type[t]) -> list[t]:
-        return db.session.query(cls).join(cls.category_todo).all()
+    def get_all(cls: type[t], user_id: int) -> list[t]:
+        return db.session.query(cls).filter_by(user_id=user_id).join(cls.category_todo).all()
 
     @staticmethod
-    def change_values(task, **kwargs):
+    def change_values(task, **kwargs) -> TaskTodo:
         for key, value in kwargs.items():
             if value is not None and key != 'task_name':
                 setattr(task, key, value)

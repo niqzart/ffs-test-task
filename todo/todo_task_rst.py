@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from flask import request, session
+from flask import session
 from flask_restx import Resource
 from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser
 from datetime import datetime
 
-from common import TaskTodo as Task, User, TaskTodo
+from common import TaskTodo as Task, User
 
-controller = ResourceController(name="tasks", path="/tasks/")
+controller = ResourceController(name="tasks", path="/")
 
-task_parser = RequestParser()
+task_parser: RequestParser = RequestParser()
 task_parser.add_argument("name", type=str)
 task_parser.add_argument("target", type=str)
 task_parser.add_argument("start_task", type=str)
@@ -22,13 +22,23 @@ def get_datetime(date_time: str) -> datetime:
     return datetime(*[int(i) for i in date_time.split()])
 
 
-@controller.route("/")
-class TodoTasks(Resource):
+@controller.route("/list_tasks/")
+class TodoListTasks(Resource):
+    @controller.jwt_authorizer(User, check_only=True)
+    @controller.marshal_list_with(Task.MainData)
+    def get(self):
+        if bool(Task.get_all(session['user_id'])) is False:
+            return controller.abort(404, "list todo tasks empty")
+        return Task.get_all(session['user_id'])
+
+
+@controller.route("/create_task/")
+class TodoCreateTask(Resource):
     @controller.jwt_authorizer(User, check_only=True)
     @controller.argument_parser(task_parser)
     @controller.marshal_with(Task.MainData)
     def post(self, **kwargs):
-        if (task := Task.find_first_by_kwargs(name=kwargs["name"])) is None:
+        if Task.find_first_by_kwargs(name=kwargs["name"], user_id=session['user_id']) is None:
             return Task.create(
                 name=kwargs['name'],
                 target=kwargs['target'],
@@ -37,28 +47,32 @@ class TodoTasks(Resource):
                 category_id=kwargs['category_id'],
                 user_id=session['user_id']
             )
-        return task, 205
-
-    @controller.jwt_authorizer(User, check_only=True)
-    @controller.marshal_list_with(Task.MainData)
-    def get(self):
-        return Task.get_all(), 200
+        controller.abort(404, "task alredy exist")
 
 
-@controller.route("task/<string:task_name>")
-class TodoTask(Resource):
+@controller.route("/detail_task/<string:task_name>")
+class TodoDetailTask(Resource):
+    error_message = "task todo not found task_name incorrect"
+    success_message = "task was deleted"
 
     @controller.jwt_authorizer(User, check_only=True)
     @controller.marshal_with(Task.MainData)
-    def get(self, task_name):
-        if not (task := Task.find_first_by_kwargs(name=task_name)) is None:
+    def get(self, task_name: str) -> Task:
+        if not (task := Task.find_first_by_kwargs(name=task_name, user_id=session['user_id'])) is None:
             return task
-        controller.abort(404, "todo not found")
+        controller.abort(404, self.error_message)
 
     @controller.jwt_authorizer(User, check_only=True)
     @controller.argument_parser(task_parser)
     @controller.marshal_with(Task.MainData)
-    def patch(self, **kwargs):
-        if (task := Task.find_first_by_kwargs(name=kwargs['task_name'])) is None:
-            controller.abort(404, "todo not found")
+    def patch(self, **kwargs) -> Task:
+        if (task := Task.find_first_by_kwargs(name=kwargs['task_name'], user_id=session['user_id'])) is None:
+            controller.abort(404, self.error_message)
         return Task.change_values(task, **kwargs)
+
+    @controller.jwt_authorizer(User, check_only=True)
+    def delete(self, task_name: str):
+        if (task := Task.find_first_by_kwargs(name=task_name, user_id=session['user_id'])) is None:
+            controller.abort(404, self.error_message)
+        task.delete()
+        return "task was deleted"
