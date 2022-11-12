@@ -32,7 +32,7 @@ class CategoryEventSpace(EventSpace):
     @controller.argument_parser(CreateModel)
     @controller.mark_duplex(CategoryTodo.IndexModel, use_event=True)
     @controller.jwt_authorizer(User)
-    @controller.marshal_ack(CategoryTodo.MainData)
+    @controller.marshal_ack(CategoryTodo.BaseModel)
     def new_category(
             self,
             event: DuplexEvent,

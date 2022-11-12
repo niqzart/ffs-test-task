@@ -25,7 +25,7 @@ def get_datetime(date_time: str) -> datetime:
 @controller.route("/list_tasks/")
 class TodoListTasks(Resource):
     @controller.jwt_authorizer(User, check_only=True)
-    @controller.marshal_list_with(Task.MainData)
+    @controller.marshal_list_with(Task.IndexModel)
     def get(self):
         if bool(Task.get_all(session['user_id'])) is False:
             return controller.abort(404, "list todo tasks empty")
@@ -36,7 +36,7 @@ class TodoListTasks(Resource):
 class TodoCreateTask(Resource):
     @controller.jwt_authorizer(User, check_only=True)
     @controller.argument_parser(task_parser)
-    @controller.marshal_with(Task.MainData)
+    @controller.marshal_with(Task.IndexModel)
     def post(self, **kwargs):
         if Task.find_first_by_kwargs(name=kwargs["name"], user_id=session['user_id']) is None:
             return Task.create(
@@ -56,7 +56,7 @@ class TodoDetailTask(Resource):
     success_message = "task was deleted"
 
     @controller.jwt_authorizer(User, check_only=True)
-    @controller.marshal_with(Task.MainData)
+    @controller.marshal_with(Task.IndexModel)
     def get(self, task_name: str) -> Task:
         if not (task := Task.find_first_by_kwargs(name=task_name, user_id=session['user_id'])) is None:
             return task
@@ -64,7 +64,7 @@ class TodoDetailTask(Resource):
 
     @controller.jwt_authorizer(User, check_only=True)
     @controller.argument_parser(task_parser)
-    @controller.marshal_with(Task.MainData)
+    @controller.marshal_with(Task.IndexModel)
     def patch(self, **kwargs) -> Task:
         if (task := Task.find_first_by_kwargs(name=kwargs['task_name'], user_id=session['user_id'])) is None:
             controller.abort(404, self.error_message)
