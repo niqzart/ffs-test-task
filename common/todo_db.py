@@ -16,7 +16,7 @@ class TaskTodo(Base):
 
     id: Column = Column(Integer, primary_key=True)
     name: Column = Column(String(36), nullable=False)
-    target: Column = Column(Text, nullable=True)
+    description: Column = Column(Text, nullable=True)
     is_ready: Column = Column(Boolean, default=False)
     start_task: Column = Column(DateTime, nullable=False)
     end_task: Column = Column(DateTime, nullable=False)
@@ -25,10 +25,15 @@ class TaskTodo(Base):
 
     category_todo = relationship("CategoryTodo", back_populates="task_todo")
 
-    MainData = PydanticModel.column_model(
-        id, name, target, is_ready, start_task,
-        end_task, category_id, user_id
-    )
+    BaseModel = PydanticModel.column_model(id)
+    CreationBaseModel = PydanticModel.column_model(name, description)
+    IndexModel = BaseModel.column_model(
+        is_ready,
+        start_task,
+        end_task,
+        category_id,
+        user_id
+    ).combine_with(CreationBaseModel)
 
     @classmethod
     def get_all(cls: type[t], user_id: int) -> list[t]:
@@ -52,10 +57,13 @@ class CategoryTodo(Base):
 
     id: Column = Column(Integer, primary_key=True)
     name: Column = Column(String(36), nullable=False)
+    user_id: Column = Column(Integer, ForeignKey("users.id"))
 
     task_todo = relationship("TaskTodo", back_populates="category_todo")
 
-    MainData = PydanticModel.column_model(id, name)
+    BaseModel = PydanticModel.column_model(id)
+    CreationBaseModel = PydanticModel.column_model(name, user_id)
+    IndexModel = BaseModel.combine_with(model=CreationBaseModel)
 
     def __repr__(self):
         return f"name={self.name!r}"

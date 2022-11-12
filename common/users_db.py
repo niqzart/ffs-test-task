@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Integer, String
 
 from .config import Base, db
-from .todo_db import TaskTodo
+from .todo_db import TaskTodo, CategoryTodo
 
 
 class BlockedToken(Base):
@@ -40,6 +40,7 @@ class User(Base, UserRole, Identifiable):
     password: Column = Column(String(100), nullable=False)
 
     task_todo = relationship(TaskTodo)
+    category_todo = relationship(CategoryTodo)
 
     MainData = PydanticModel.column_model(id, username)
 

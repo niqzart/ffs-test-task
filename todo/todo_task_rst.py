@@ -12,7 +12,7 @@ controller = ResourceController(name="tasks", path="/")
 
 task_parser: RequestParser = RequestParser()
 task_parser.add_argument("name", type=str)
-task_parser.add_argument("target", type=str)
+task_parser.add_argument("description", type=str)
 task_parser.add_argument("start_task", type=str)
 task_parser.add_argument("end_task", type=str)
 task_parser.add_argument("category_id", type=int)
@@ -41,7 +41,7 @@ class TodoCreateTask(Resource):
         if Task.find_first_by_kwargs(name=kwargs["name"], user_id=session['user_id']) is None:
             return Task.create(
                 name=kwargs['name'],
-                target=kwargs['target'],
+                description=kwargs['description'],
                 start_task=get_datetime(kwargs['start_task']),
                 end_task=get_datetime(kwargs['end_task']),
                 category_id=kwargs['category_id'],
