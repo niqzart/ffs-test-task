@@ -1,37 +1,13 @@
 from flask_fullstack import DuplexEvent, EventSpace, EventController
-from flask_socketio import join_room, leave_room
-from pydantic import BaseModel
-from common import User, TaskTodo, db
-from datetime import datetime
+from common import User, TaskTodo, db, get_datetime
+from todo.config import UserRoom
 
 controller: EventController = EventController()
 
 
-def get_datetime(date_time: str) -> datetime:
-    return datetime(*[int(i) for i in date_time.split()])
-
-
 @controller.route()
-class TaskEventSpace(EventSpace):
-
-    @classmethod
-    def room_name(cls, user_id: int) -> str:
-        return f"cat-{user_id}"
-
-    class UserIdModel(BaseModel):
-        user_id: int
-
-    @controller.argument_parser(UserIdModel)
-    @controller.force_ack()
-    def open_room(self, user: User.id) -> None:
-        join_room(self.room_name(user.id))
-
-    @controller.argument_parser(UserIdModel)
-    @controller.force_ack()
-    def close_room(self, user: User) -> None:
-        leave_room(self.room_name(user.id))
-
-    class CreateModel(TaskTodo.CreationBaseModel, UserIdModel):
+class TaskEventSpace(EventSpace, UserRoom):
+    class CreateModel(TaskTodo.CreationBaseModel, UserRoom.UserIdModel):
         pass
 
     @controller.argument_parser(CreateModel)
@@ -58,12 +34,13 @@ class TaskEventSpace(EventSpace):
             event.emit_convert(task, self.room_name(user.id))
         controller.abort(404, "task alredy exist")
 
-    class UpdateModel(TaskTodo.CreationBaseModel, UserIdModel):
+    class UpdateModel(TaskTodo.CreationBaseModel, UserRoom.UserIdModel):
         task_id: int
 
     @controller.argument_parser(UpdateModel)
     @controller.mark_duplex(TaskTodo.IndexModel)
     @controller.jwt_authorizer(User)
+    @controller.database_searcher(TaskTodo)
     @controller.marshal_ack(TaskTodo.IndexModel)
     def update_task(
             self,
@@ -72,10 +49,9 @@ class TaskEventSpace(EventSpace):
             description: str,
             start_task: str,
             end_task: str,
-            user: User
+            user: User,
+            task: TaskTodo
     ):
-        if (task := TaskTodo.find_first_by_kwargs(name=name, user_id=user.id)) is None:
-            controller.abort(404, self.error_message)
 
         changed_task = TaskTodo.change_values(
             task, **{"task_name": name,
@@ -87,7 +63,7 @@ class TaskEventSpace(EventSpace):
         db.session.commit()
         event.emit_convert(changed_task, self.room_name(user.id))
 
-    class DeleteModel(UserIdModel):
+    class DeleteModel(UserRoom.UserIdModel):
         task_id: int
 
     @controller.argument_parser(DeleteModel)

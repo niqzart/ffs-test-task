@@ -13,6 +13,7 @@ t = TypeVar("t", bound="TaskTodo")
 
 class TaskTodo(Base):
     __tablename__ = "task_todo"
+    not_found_text = 'Task does not exist'
 
     id: Column = Column(Integer, primary_key=True)
     name: Column = Column(String(36), nullable=False)
