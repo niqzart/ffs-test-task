@@ -6,7 +6,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .config import Base
-from common import db
+from common import db, get_datetime
 
 t = TypeVar("t", bound="TaskTodo")
 
@@ -26,14 +26,15 @@ class TaskTodo(Base):
     category_todo = relationship("CategoryTodo", back_populates="task_todo")
 
     BaseModel = PydanticModel.column_model(id)
-    CreationBaseModel = PydanticModel.column_model(name, description)
-    IndexModel = BaseModel.column_model(
+    CreationBaseModel = PydanticModel.column_model(
+        name, description, start_task,
+        end_task, category_id
+    )
+    IndexModel = PydanticModel.column_model(
+        name, description,
         is_ready,
-        start_task,
-        end_task,
-        category_id,
-        user_id
-    ).combine_with(CreationBaseModel)
+        start_task, end_task, category_id, user_id
+    ).combine_with(BaseModel)
 
     @classmethod
     def get_all(cls: type[t], user_id: int) -> list[t]:
@@ -43,6 +44,8 @@ class TaskTodo(Base):
     def change_values(task, **kwargs) -> TaskTodo:
         for key, value in kwargs.items():
             if value is not None and key != 'task_name':
+                if key == 'start_task' or 'end_task':
+                    setattr(task, key, get_datetime(value))
                 setattr(task, key, value)
         return task
 

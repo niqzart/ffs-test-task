@@ -18,12 +18,12 @@ class CategoryEventSpace(EventSpace):
 
     @controller.argument_parser(UserIdModel)
     @controller.force_ack()
-    def open_category(self, user: User.id) -> None:
+    def open_room(self, user: User.id) -> None:
         join_room(self.room_name(user.id))
 
     @controller.argument_parser(UserIdModel)
     @controller.force_ack()
-    def close_category(self, user: User) -> None:
+    def close_room(self, user: User) -> None:
         leave_room(self.room_name(user.id))
 
     class CreateModel(CategoryTodo.CreationBaseModel, UserIdModel):

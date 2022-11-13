@@ -6,7 +6,7 @@ from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser
 from datetime import datetime
 
-from common import TaskTodo as Task, User
+from common import TaskTodo as Task, User, get_datetime
 
 controller = ResourceController(name="tasks", path="/")
 
@@ -16,10 +16,6 @@ task_parser.add_argument("description", type=str)
 task_parser.add_argument("start_task", type=str)
 task_parser.add_argument("end_task", type=str)
 task_parser.add_argument("category_id", type=int)
-
-
-def get_datetime(date_time: str) -> datetime:
-    return datetime(*[int(i) for i in date_time.split()])
 
 
 @controller.route("/list_tasks/")
@@ -76,4 +72,3 @@ class TodoDetailTask(Resource):
             controller.abort(404, self.error_message)
         task.delete()
         return "task was deleted"
-

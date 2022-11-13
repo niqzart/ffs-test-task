@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy, Model
 from sqlalchemy import MetaData, select
 from sqlalchemy.orm import scoped_session, declarative_base
 from sqlalchemy.sql import Select
+from datetime import datetime
 
 try:
     from greenlet import getcurrent as _ident_func
@@ -98,6 +99,10 @@ class Base(db.Model):  # TODO this is just an idea, redo
     def delete(self) -> None:
         db.session.delete(self)
         db.session.flush()
+
+
+def get_datetime(date_time: str) -> datetime:
+    return datetime(*[int(i) for i in date_time.split()])
 
 
 app.configure_error_handlers(print)
