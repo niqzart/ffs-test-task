@@ -11,6 +11,7 @@
 - Язык программирования: [Python](https://www.python.org/downloads/) 3.9+
 - ORM-система: [SQLAlchemy](https://www.sqlalchemy.org/) 1.4/2.0+
 - Микро-фреймворк: [Flask](https://flask.palletsprojects.com/en/2.2.x/) 2.0+
+- ORM-Плагин: [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/) 3.0+
 - При участии: [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html)
 - А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.4.8
 
@@ -35,6 +36,8 @@ pip install -r requirements.txt
 - [.database_searcher](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/mixins.py#L48)
 - [.jwt_authorizer](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/mixins.py#L96)
 - [ResourceController + его методы](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/restx/controller.py)
+
+Никто не запрещает читать код репозитория внутри проекта, где используется эта библиотека: [xi.backend](https://github.com/xi-effect/xi.backend)
 
 Знание flask-restx и sqlalchemy сильно поможет в понимании ffs, уже с этими знаниями можно почитать информационный материал ниже:
 
@@ -97,7 +100,7 @@ pip install -r requirements.txt
 ### Стиль git-а
 - Желательно соблюдать [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - Решить задачу в несколько коммитов
-- Pull Request с описанием приветствуется
+- Pull Request с мини-описанием приветствуется
 
 ## Ссылки
 ### Общее
@@ -105,6 +108,7 @@ pip install -r requirements.txt
 - [pytest](https://docs.pytest.org/en/6.2.x/contents.html)
 
 ### Flask и расширения:
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/)
 - [Flask-JWT-Extened](https://flask-jwt-extended.readthedocs.io/en/stable/)
 - [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html)
 - [Flask Testing](https://flask.palletsprojects.com/en/2.0.x/testing/)

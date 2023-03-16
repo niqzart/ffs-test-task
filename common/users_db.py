@@ -16,7 +16,7 @@ class BlockedToken(Base):
 
     @classmethod
     def find_by_jti(cls, jti) -> BlockedToken | None:
-        return db.session.get_first(select(cls).filter_by(jti=jti))
+        return db.get_first(select(cls).filter_by(jti=jti))
 
 
 class User(Base, UserRole, Identifiable):
@@ -33,15 +33,15 @@ class User(Base, UserRole, Identifiable):
         return pbkdf2_sha256.verify(password, hashed)
 
     # Vital:
-    id = Column(Integer, primary_key=True)
-    username = Column(String(100), unique=True, nullable=False)
-    password = Column(String(100), nullable=False)
+    id: Column | int = Column(Integer, primary_key=True)
+    username: Column | str = Column(String(100), unique=True, nullable=False)
+    password: Column | str = Column(String(100), nullable=False)
 
     MainData = PydanticModel.column_model(id, username)
 
     @classmethod
     def find_by_id(cls, entry_id: int) -> User | None:
-        return db.session.get_first(select(cls).filter_by(id=entry_id))
+        return db.get_first(select(cls).filter_by(id=entry_id))
 
     @classmethod
     def find_by_identity(cls, identity: int) -> User | None:
@@ -49,13 +49,13 @@ class User(Base, UserRole, Identifiable):
 
     @classmethod
     def find_by_username(cls, username: str) -> User | None:
-        return db.session.get_first(select(cls).filter_by(username=username))
+        return db.get_first(select(cls).filter_by(username=username))
 
     @classmethod
     def create(cls, username: str, password: str) -> User | None:
         return super().create(username=username, password=cls.generate_hash(password))
 
-    def get_identity(self):
+    def get_identity(self) -> int:
         return self.id
 
 
