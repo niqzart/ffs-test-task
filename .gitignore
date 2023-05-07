@@ -8,3 +8,5 @@ venv/
 tmp/
 .env
 *.db
+__pycache__/
+
