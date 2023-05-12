@@ -18,5 +18,5 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app, db_url)  # "echo": True
 Base = db.Model
 
-app.configure_error_handlers(print)
+# app.configure_error_handlers(print)
 app.config["RESTX_INCLUDE_ALL_MODELS"] = True
