@@ -15,7 +15,7 @@ class TodoEventSpace(EventSpace):
     @controller.argument_parser(Task.IndexModel)
     @controller.mark_duplex(Task.IndexModel, use_event=True)
     @controller.jwt_authorizer(User)
-    @controller.marshal_ack(Task.IndexModel)
+    @controller.marshal_ack(Task.BaseModel)
     def create_task(
         self,
         event: DuplexEvent,
