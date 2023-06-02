@@ -20,8 +20,8 @@ class Todo(Base, Identifiable):
 
     user_id: Column | int = Column(Integer, ForeignKey(User.id), nullable=False)
 
-    IndexModel = PydanticModel.column_model(id, task, category, date, duration, user_id)
     BaseModel = PydanticModel.column_model(task, category, date, duration, user_id)
+    IndexModel = BaseModel.column_model(id)
     DeleteModel = PydanticModel.column_model(id, user_id)
 
     @classmethod
