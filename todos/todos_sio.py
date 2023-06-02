@@ -46,10 +46,10 @@ class TodosListEventSpace(EventSpace):
             event: DuplexEvent,
             user: User,
             todo_id: int,
-            task: str,
-            category: str,
-            date: str,
-            duration: int,
+            task: str | None,
+            category: str | None,
+            date: str | None,
+            duration: int | None,
     ) -> Todo | None:
         if (todo := Todo.get_by_id(todo_id=todo_id, user_id=user.id)) is None:
             controller.abort(404, "TODO Not Found")

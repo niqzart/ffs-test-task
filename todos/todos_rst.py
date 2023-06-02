@@ -20,10 +20,16 @@ class TodosList(Resource):
     parser.add_argument("date", type=parse_date, required=True)
     parser.add_argument("duration", type=int, required=True)
 
+    get_parser = RequestParser()
+    get_parser.add_argument("date", type=parse_date, required=False)
+
     @controller.jwt_authorizer(User)
+    @controller.argument_parser(get_parser)
     @controller.marshal_list_with(Todo.IndexModel)
-    def get(self, user: User) -> list[Todo]:
-        return Todo.find_by_user_id(user_id=user.id)
+    def get(self, user: User, date: datetime | None) -> list[Todo]:
+        if date is not None:
+            return Todo.find_by_date(date=date, user_id=user.id)
+        return Todo.find_by_user_id(user.id)
 
     @controller.jwt_authorizer(User)
     @controller.argument_parser(parser)
@@ -58,7 +64,7 @@ class Todos(Resource):
     @controller.jwt_authorizer(User)
     @controller.marshal_with(Todo.IndexModel)
     def get(self, user: User, todo_id: int) -> Todo:
-        if (todo := Todo.get_by_id(todo_id=todo_id, user_id=user.id)) is None:
+        if (todo := Todo.get_by_id(user_id=user.id, todo_id=todo_id)) is None:
             controller.abort(404, "TODO Not Found")
         elif todo.user_id != user.id:
             controller.abort(403, "Permission Denied")
@@ -73,12 +79,12 @@ class Todos(Resource):
             self,
             user: User,
             todo_id: int,
-            task: str | None = None,
-            category: str | None = None,
-            date: datetime | None = None,
-            duration: str | None = None,
+            task: str | None,
+            category: str | None,
+            date: datetime | None,
+            duration: str | None,
     ) -> Todo:
-        if (todo := Todo.get_by_id(todo_id=todo_id, user_id=user.id)) is None:
+        if (todo := Todo.get_by_id(user_id=user.id, todo_id=todo_id)) is None:
             controller.abort(404, "TODO Not Found")
         elif todo.user_id != user.id:
             controller.abort(403, "Permission Denied")
@@ -93,7 +99,7 @@ class Todos(Resource):
     @controller.doc_abort(403, "Permission Denied")
     @controller.jwt_authorizer(User)
     def delete(self, user: User, todo_id: int) -> tuple[dict, int]:
-        if (todo := Todo.get_by_id(todo_id=todo_id, user_id=user.id)) is None:
+        if (todo := Todo.get_by_id(user_id=user.id, todo_id=todo_id)) is None:
             controller.abort(404, "TODO Not Found")
         elif todo.user_id != user.id:
             controller.abort(403, "Permission Denied")

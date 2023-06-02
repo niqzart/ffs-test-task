@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from flask_fullstack import Identifiable, PydanticModel
+import sqlalchemy
 from sqlalchemy import Column, select, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, String, DateTime
 
@@ -42,9 +43,16 @@ class Todo(Base, Identifiable):
         )
 
     @classmethod
-    def get_by_id(cls, todo_id: int, user_id: int) -> Todo | None:
+    def get_by_id(cls, user_id: int, todo_id: int) -> Todo | None:
         return db.get_first(select(cls).filter_by(id=todo_id, user_id=user_id))
 
     @classmethod
     def find_by_user_id(cls, user_id: int) -> list[Todo]:
         return db.get_all(select(cls).filter_by(user_id=user_id))
+
+    @classmethod
+    def find_by_date(cls, user_id: int, date: datetime) -> list[Todo]:
+        return db.get_all(select(cls).filter(
+            cls.user_id == user_id,
+            sqlalchemy.func.date(cls.date) == sqlalchemy.func.date(date),
+        ))
