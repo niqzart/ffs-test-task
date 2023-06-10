@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ffs-test-task"
+version = "0.1.0"
+description = "Репозиторий-заготовка для выполнения тестового задания для вступления в команду бэкенда. Призван погрузить в стек проекта, познакомить с используемыми библиотеками, в том числе внутрипроектными"
+authors = ["niqzart <qwert45hi@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "ffs_test_task"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+gevent-websocket = ">=0.10.1,<0.11.0"
+gevent = ">=22.10.2,<22.11.0"
+greenlet = ">=2.0.2,<2.1.0"
+gunicorn = ">=20.1.0,<20.2.0"
+passlib = "^1.7.4"
+psycopg2-binary = "^2.9.6"
+flask-fullstack = "0.4.14"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

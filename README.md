@@ -8,20 +8,21 @@
 Репозиторий-заготовка для выполнения тестового задания для вступления в команду бэкенда. Призван погрузить в стек проекта, познакомить с используемыми библиотеками, в том числе внутрипроектными.
 
 ### Стек
-- Язык программирования: [Python](https://www.python.org/downloads/) 3.9+
+- Язык программирования: [Python](https://www.python.org/downloads/) 3.11+
 - ORM-система: [SQLAlchemy](https://www.sqlalchemy.org/) 1.4/2.0+
 - Микро-фреймворк: [Flask](https://flask.palletsprojects.com/en/2.2.x/) 2.0+
 - ORM-Плагин: [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/) 3.0+
 - При участии: [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html)
-- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.4.8
+- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.4.14
 
 ### Начало и установка
 1. Создать публичный fork репозитория
 2. Склонировать репозиторий себе
-3. Создать виртуальное окружение **на python 3.9**
+3. Создать виртуальное окружение **на python 3.11**
 4. Установить зависимости:
 ```sh
-pip install -r requirements.txt
+pip install poetry==1.5.1
+poetry install
 ```
 5. Запусить файл `app.py`, можно создать Run Configuration на его запуск
 6. Проверить, документация работает: [http://localhost:5000/doc/](http://localhost:5000/doc/)
