@@ -15,7 +15,12 @@ gunicorn = ">=20.1.0,<20.2.0"
 passlib = "^1.7.4"
 psycopg2-binary = "^2.9.6"
 flask-fullstack = "0.4.14"
+python-dotenv = "^1.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+flask-testing = "^0.8.1"
 
 [build-system]
 requires = ["poetry-core"]
