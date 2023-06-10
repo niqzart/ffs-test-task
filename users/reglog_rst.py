@@ -53,7 +53,7 @@ class HomeData(Resource):
 class Test(Resource):
     @controller.marshal_with_authorization(User.MainData)
     def get(self):
-        """ Localhost-only endpoint for logging in from the docs """
+        """Localhost-only endpoint for logging in from the docs"""
         if not current_app.debug:
             return {"a": False}
 
