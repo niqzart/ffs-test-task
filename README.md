@@ -90,6 +90,8 @@ poetry install
 
 </details>
 
+[FFS: Assert Contains (для тестов)](https://github.com/niqzart/flask-fullstack/blob/master/docs/assert-contains.md)
+
 ### Стиль кода
 - **Будет проверяться**
 - Соблюдение PEP8 обязательно
