@@ -12,6 +12,7 @@ def init_users():
     if User.find_by_username(TEST_USERNAME) is None:
         User.create(TEST2_USERNAME, TEST2_PASSWORD)
 
+
 def init_signs_game():
     from common.game_db import Sign
 
