@@ -3,6 +3,7 @@ from __future__ import annotations
 from flask_fullstack import UserRole, PydanticModel, Identifiable
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy import Column, select
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import Integer, String
 
 from .config import Base, db
@@ -36,6 +37,7 @@ class User(Base, UserRole, Identifiable):
     id: Column | int = Column(Integer, primary_key=True)
     username: Column | str = Column(String(100), unique=True, nullable=False)
     password: Column | str = Column(String(100), nullable=False)
+    move_game: relationship = relationship("MoveGame")
 
     MainData = PydanticModel.column_model(id, username)
 
