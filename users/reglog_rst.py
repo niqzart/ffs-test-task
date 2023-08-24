@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt
 from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
 
-from common import User, BlockedToken, TEST_USERNAME
+from common import User, BlockedToken, TEST_USERNAME1
 
 controller = ResourceController("reglog", path="/")
 
@@ -57,7 +57,7 @@ class Test(Resource):
         if not current_app.debug:
             return {"a": False}
 
-        user = User.find_by_username(TEST_USERNAME)
+        user = User.find_by_username(TEST_USERNAME1)
         return user, user
 
 
