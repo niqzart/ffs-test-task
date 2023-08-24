@@ -1,32 +1,33 @@
-from flask_fullstack import ResourceController, EventController, EventSpace
-from flask_socketio import join_room, leave_room, send
+from flask_fullstack import ResourceController, EventController
 from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
-from pydantic import BaseModel
 
-from common import User
+from common import Sign, User
+from common.game_db import MoveGame
 
 controller = ResourceController("game", path="/game")
 event_controller = EventController()
 
-room_parser: RequestParser = RequestParser()
-room_parser.add_argument("username", type=str, required=True)
-room_parser.add_argument("room", type=int, required=True)
+result_game_parser: RequestParser = RequestParser()
+result_game_parser.add_argument("room_name", type=str, required=True)
+result_game_parser.add_argument("game_number", type=int, required=True)
+result_game_parser.add_argument("user_id", type=int, required=True)
 
 
-@controller.route("/")
-class Game(Resource):
+@controller.route('/move')
+class Move(Resource):
 
-    # @controller.doc_abort("200 ", "User has left the room.")
-    @controller.argument_parser(room_parser)
-    @controller.marshal_with(User.MainData)
-    def get(self, data: dict):
-        return {'create_room': 'Create_room', 'join_room': 'Join room'}
-
+    @controller.jwt_authorizer(User)
+    @controller.marshal_with(Sign.BaseModel)
+    def get(self):
+        return Sign.get_all()
 
 
-# @controller.route('/selection')
-# class Selection(Resource):
+@controller.route('/result')
+class ResultGame(Resource):
 
-#     @controller.argument_parser(room_parser)
-#     @controller.marshal_with(User.MainData)
+    @controller.jwt_authorizer(User)
+    @controller.argument_parser(result_game_parser)
+    @controller.marshal_with(MoveGame.BaseModel)
+    def get(self, room_name: str, user_id: int, game_number: int):
+        return MoveGame.find_winner(room_name=room_name, user_id=user_id, game_number=game_number)

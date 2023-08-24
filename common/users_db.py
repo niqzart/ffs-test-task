@@ -37,7 +37,7 @@ class User(Base, UserRole, Identifiable):
     id: Column | int = Column(Integer, primary_key=True)
     username: Column | str = Column(String(100), unique=True, nullable=False)
     password: Column | str = Column(String(100), nullable=False)
-    move_game: relationship = relationship("MoveGame")
+    move_game: relationship = relationship("MoveGame", back_populates='user')
 
     MainData = PydanticModel.column_model(id, username)
 
