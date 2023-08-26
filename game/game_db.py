@@ -76,8 +76,18 @@ class GameActPerUser(Base):
     MainData = PydanticModel.column_model(id, game_id, user_id, shape, result)
 
     @classmethod
-    def create(cls, game_id: int, user_id: int, shape: Enum, result: Enum) -> GameActPerUser | None:
-        return super().create(game_id=game_id, user_id=user_id, shape=shape, result=result)
+    def create(
+        cls,
+        game_id: int,
+        user_id: int,
+        shape: str = None,
+        result: str = None
+    ) -> GameActPerUser | None:
+        return super().create(
+            game_id=game_id,
+            user_id=user_id,
+            shape=shape,
+            result=result)
 
     @classmethod
     def find_by_game_and_user_ids(
@@ -85,4 +95,12 @@ class GameActPerUser(Base):
         game_id: int,
         user_id: int
     ) -> GameActPerUser | None:
-        return db.get_first(select(cls).filter_by(game_id=game_id, user_id=user_id))
+        return db.get_first(select(cls).filter_by(
+            game_id=game_id,
+            user_id=user_id))
+
+    @classmethod
+    def find_enemy(cls, game_id: int, user_id: int) -> GameActPerUser | None:
+        return db.get_first(select(cls).where(
+            game_id == game_id,
+            user_id != user_id))
