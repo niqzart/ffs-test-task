@@ -10,8 +10,8 @@ controller = ResourceController(name="game", path='/')
 
 
 game_parser = RequestParser()
-game_parser.add_argument("game_id", type=int)
-game_parser.add_argument("user_id", type=int)
+game_parser.add_argument("game_id", type=int, required=True)
+game_parser.add_argument("user_id", type=int, required=True)
 
 
 @controller.route("/shapes/")
