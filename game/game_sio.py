@@ -1,4 +1,4 @@
-from flask_fullstack import EventController, EventSpace
+from flask_fullstack import EventController, EventSpace, DuplexEvent
 from flask_socketio import join_room, leave_room
 from common import User
 from . import Game, GameActPerUser
@@ -10,17 +10,23 @@ controller = EventController()
 @controller.route()
 class RoomEventSpace(EventSpace):
 
-    def start_new_game(self, user: User) -> str:
-        game = Game.create(creator_id=user.id)
+    @controller.argument_parser(Game.MainData)
+    @controller.mark_duplex(Game.MainData, use_event=True)
+    @controller.marshal_ack(Game.MainData)
+    def start(self, event: DuplexEvent, user: User) -> str:
+        game = Game.create()
         join_room(game.room_code)
-        return game.room_code
+        event.emit_convert(
+            data={'room_code': game.room_code},
+            room=game.room_code,
+            include_self=True)
 
-    def join_game(self, user: User, room_code: str):
-        game = Game.find_by_room_code(room_code)
-        game.joined_id = user.id
+    @controller.argument_parser(Game.MainData)
+    def join(self, user: User, room_code: str):
         join_room(room_code)
 
-    def leave_game(self, user: User, room_code: str):
+    @controller.argument_parser()
+    def leave(self, user: User, room_code: str):
         leave_room(room_code)
 
     def get_results(
@@ -45,10 +51,23 @@ class RoomEventSpace(EventSpace):
         else:
             game_user.result, game_enemy.result = 'WIN', 'LOSE'
 
-    def make_shape_chiose(self, game_id: int, user: User, shape: str):
+    @controller.argument_parser(GameActPerUser.MainData)
+    @controller.mark_duplex(GameActPerUser.MainData, use_event=True)
+    @controller.marshal_ack(GameActPerUser.MainData)
+    def make_shape_chiose(
+        self,
+        event: DuplexEvent,
+        game_id: int,
+        room_code: str,
+        user: User,
+        shape: str
+    ):
         game = GameActPerUser.find_by_game_and_user_ids(game_id, user.id)
         game.shape = shape
         enemy = GameActPerUser.get_enemy(game_id, user.id)
         enemys_shape = enemy.shape
         if enemys_shape:
             self.get_results(game_id, user.id, shape, enemy.id, enemys_shape)
+            return event.emit_convert(
+                room=room_code,
+                include_self=True)
