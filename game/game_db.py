@@ -11,10 +11,14 @@ from sqlalchemy.orm import relationship
 from common import Base, db, User
 
 
-class ShapeChoices(TypeEnum):
-    ROCK = 0
-    PAPER = 1
-    SCISSORS = 2
+class Shapes(TypeEnum):
+    ROCK = 'ROCK'
+    PAPER = 'PAPER'
+    SCISSORS = 'SCISSORS'
+
+    @classmethod
+    def list(cls) -> list:
+        return [shape.value for shape in Shapes]
 
 
 class GameResults(TypeEnum):
@@ -70,7 +74,7 @@ class GameActPerUser(Base):
         nullable=False
     )
     user: relationship = relationship(User)
-    shape: Column | Enum = Column(Enum(ShapeChoices))
+    shape: Column | Enum = Column(Enum(Shapes))
     result: Column | Enum = Column(Enum(GameResults))
 
     MainData = PydanticModel.column_model(id, game_id, user_id, shape, result)

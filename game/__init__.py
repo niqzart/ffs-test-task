@@ -1,1 +1,1 @@
-from .game_db import ShapeChoices, GameResults, Game, GameActPerUser
+from .game_db import Shapes, GameResults, Game, GameActPerUser
