@@ -24,13 +24,13 @@ class RoomEventSpace(EventSpace):
         leave_room(room_code)
 
     def get_results(
-            self,
-            game_id: int,
-            user_id: int,
-            user_shape: str,
-            enemy_id: int,
-            enemy_shape: str):
-        
+        self,
+        game_id: int,
+        user_id: int,
+        user_shape: str,
+        enemy_id: int,
+        enemy_shape: str
+    ):
         game_user = GameActPerUser.find_by_game_and_user_ids(game_id, user_id)
         game_enemy = GameActPerUser.find_by_game_and_user_ids(game_id, enemy_id)
 
