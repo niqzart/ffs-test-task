@@ -3,7 +3,6 @@ import string
 import random
 
 from flask_fullstack import TypeEnum, PydanticModel
-
 from sqlalchemy import Column, ForeignKey, select
 from sqlalchemy.types import Integer, String, Enum
 from sqlalchemy.orm import relationship
@@ -57,6 +56,10 @@ class Game(Base):
     def find_by_room_code(cls, room_code: str) -> Game | None:
         return db.get_first(select(cls).filter_by(room_code=room_code))
 
+    @classmethod
+    def get_all(cls) -> list | None:
+        return db.get_all
+
 
 class GameActPerUser(Base):
     __tablename__ = "gameacts"
@@ -67,17 +70,20 @@ class GameActPerUser(Base):
         ForeignKey("games.id"),
         nullable=False
     )
-    game: relationship = relationship(Game)
     user_id: Column | int = Column(
         Integer,
         ForeignKey("users.id"),
         nullable=False
     )
-    user: relationship = relationship(User)
     shape: Column | Enum = Column(Enum(Shapes))
     result: Column | Enum = Column(Enum(GameResults))
 
+    game: relationship = relationship(Game)
+    user: relationship = relationship(User)
+
     MainData = PydanticModel.column_model(id, game_id, user_id, shape, result)
+    ShapeModel = PydanticModel.column_model(shape)
+    ResultModel = PydanticModel.column_model(result)
 
     @classmethod
     def create(
@@ -108,3 +114,7 @@ class GameActPerUser(Base):
         return db.get_first(select(cls).where(
             game_id == game_id,
             user_id != user_id))
+
+    @classmethod
+    def get_all(cls):
+        return db.get_all()

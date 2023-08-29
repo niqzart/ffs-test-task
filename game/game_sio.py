@@ -1,5 +1,6 @@
 from flask_fullstack import EventController, EventSpace, DuplexEvent
 from flask_socketio import join_room, leave_room
+
 from common import User
 from . import Game, GameActPerUser
 
@@ -10,7 +11,7 @@ controller = EventController()
 @controller.route()
 class RoomEventSpace(EventSpace):
 
-    @controller.argument_parser(Game.MainData)
+    @controller.argument_parser(User.MainData)
     @controller.mark_duplex(Game.MainData, use_event=True)
     @controller.marshal_ack(Game.MainData)
     def start(self, event: DuplexEvent, user: User) -> str:
@@ -21,11 +22,11 @@ class RoomEventSpace(EventSpace):
             room=game.room_code,
             include_self=True)
 
-    @controller.argument_parser(Game.MainData)
+    @controller.argument_parser(User.MainData)
     def join(self, user: User, room_code: str):
         join_room(room_code)
 
-    @controller.argument_parser()
+    @controller.argument_parser(User.MainData)
     def leave(self, user: User, room_code: str):
         leave_room(room_code)
 
@@ -51,7 +52,7 @@ class RoomEventSpace(EventSpace):
         else:
             game_user.result, game_enemy.result = 'WIN', 'LOSE'
 
-    @controller.argument_parser(GameActPerUser.MainData)
+    @controller.argument_parser()
     @controller.mark_duplex(GameActPerUser.MainData, use_event=True)
     @controller.marshal_ack(GameActPerUser.MainData)
     def make_shape_chiose(

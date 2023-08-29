@@ -2,11 +2,11 @@ from flask_restx import Resource
 from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser
 
-from . import Shapes, GameActPerUser
+from . import Shapes, GameActPerUser, Game
 from common import User
 
 
-controller = ResourceController(name="game", path='/')
+controller = ResourceController(name="game", path="/game/")
 
 
 game_parser = RequestParser()
@@ -22,14 +22,33 @@ class Shape(Resource):
         return Shapes.list()
 
 
-@controller.route("/game_results/")
+@controller.route("/results/")
 class GameResults(Resource):
 
     @controller.jwt_authorizer(User)
     @controller.argument_parser(game_parser)
+    @controller.marshal_with(GameActPerUser.ResultModel)
     def get(self, game_id: int, user_id: int):
         game = GameActPerUser.find_by_game_and_user_ids(
             game_id=game_id,
             user_id=user_id
         )
         return game.result
+
+
+@controller.route("/all/")
+class Games(Resource):
+
+    @controller.jwt_authorizer(User)
+    @controller.marshal_with(Game.MainData)
+    def get(self):
+        return Game.get_all()
+
+
+@controller.route("/details/")
+class GamesDetailed(Resource):
+
+    @controller.jwt_authorizer(User)
+    @controller.marshal_with(GameActPerUser.MainData)
+    def get(self):
+        return GameActPerUser.get_all()
