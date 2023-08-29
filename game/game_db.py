@@ -57,8 +57,8 @@ class Game(Base):
         return db.get_first(select(cls).filter_by(room_code=room_code))
 
     @classmethod
-    def get_all(cls) -> list | None:
-        return db.get_all
+    def get_all(cls, user_id: int) -> list | None:
+        return db.session.query(cls).filter_by(user_id=user_id).all()
 
 
 class GameActPerUser(Base):
@@ -116,5 +116,5 @@ class GameActPerUser(Base):
             user_id != user_id))
 
     @classmethod
-    def get_all(cls):
-        return db.get_all()
+    def get_all(cls, user_id: int) -> list | None:
+        return db.session.query(cls).filter_by(user_id=user_id).all()

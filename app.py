@@ -1,7 +1,7 @@
 from main import app, socketio
 from common import (
     db, db_url, 
-    TEST_USERNAME1, TEST_PASSWORD1, 
+    TEST_USERNAME, TEST_PASSWORD, 
     TEST_USERNAME2, TEST_PASSWORD2, 
     TEST_GAME_ID, 
     TEST_USER1_ID, TEST_USER2_ID, 
@@ -13,8 +13,8 @@ from common import (
 def init_users():
     from common.users_db import User
 
-    if User.find_by_username(TEST_USERNAME1) is None:
-        User.create(TEST_USERNAME1, TEST_PASSWORD1)
+    if User.find_by_username(TEST_USERNAME) is None:
+        User.create(TEST_USERNAME, TEST_PASSWORD)
     
     if User.find_by_username(TEST_USERNAME2) is None:
         User.create(TEST_USERNAME2, TEST_PASSWORD2)

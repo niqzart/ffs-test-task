@@ -1,3 +1,4 @@
+from flask import session 
 from flask_restx import Resource
 from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser
@@ -42,13 +43,17 @@ class Games(Resource):
     @controller.jwt_authorizer(User)
     @controller.marshal_with(Game.MainData)
     def get(self):
-        return Game.get_all()
+        if bool(Game.get_all(session["user_id"])) is False:
+            return controller.abort(404, "no games were found")
+        return Game.get_all(session["user_id"])
 
 
-@controller.route("/details/")
+@controller.route("/all-detailed/")
 class GamesDetailed(Resource):
 
     @controller.jwt_authorizer(User)
     @controller.marshal_with(GameActPerUser.MainData)
     def get(self):
-        return GameActPerUser.get_all()
+        if bool(GameActPerUser.get_all(session["user_id"])) is False:
+            return controller.abort(404, "no games were found")
+        return GameActPerUser.get_all(session["user_id"])

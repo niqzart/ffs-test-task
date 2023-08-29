@@ -1,5 +1,5 @@
-TEST_USERNAME1: str = "test1"
-TEST_PASSWORD1: str = "123456"
+TEST_USERNAME: str = "test1"
+TEST_PASSWORD: str = "123456"
 TEST_USERNAME2: str = "test2"
 TEST_PASSWORD2: str = "123456"
 
