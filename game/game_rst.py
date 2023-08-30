@@ -1,4 +1,4 @@
-from flask import session 
+from flask import session
 from flask_restx import Resource
 from flask_fullstack import ResourceController
 from flask_restx.reqparse import RequestParser

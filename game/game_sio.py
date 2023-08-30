@@ -55,7 +55,7 @@ class RoomEventSpace(EventSpace):
     @controller.argument_parser()
     @controller.mark_duplex(GameActPerUser.MainData, use_event=True)
     @controller.marshal_ack(GameActPerUser.MainData)
-    def make_shape_chiose(
+    def make_shape_choice(
         self,
         event: DuplexEvent,
         game_id: int,
