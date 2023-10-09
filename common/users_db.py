@@ -7,18 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy.sql.sqltypes import String
 
-from .config import Base, db
-
-
-class BlockedToken(Base):
-    __tablename__ = "blocked_tokes"
-
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    jti: Mapped[str] = mapped_column(String(36))
-
-    @classmethod
-    def find_by_jti(cls, jti) -> BlockedToken | None:
-        return db.get_first(select(cls).filter_by(jti=jti))
+from common.config import Base, db
 
 
 class User(Base, UserRole, Identifiable):
