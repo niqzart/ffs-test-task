@@ -9,11 +9,12 @@
 
 ### Стек
 - Язык программирования: [Python](https://www.python.org/downloads/) 3.11+
-- ORM-система: [SQLAlchemy](https://www.sqlalchemy.org/) 1.4/2.0+
+- ORM-система: [SQLAlchemy](https://www.sqlalchemy.org/) 2.0+
 - Микро-фреймворк: [Flask](https://flask.palletsprojects.com/en/2.2.x/) 2.0+
 - ORM-Плагин: [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/) 3.0+
 - При участии: [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/index.html)
-- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.4.14
+- Не забывая о: [Pydantic-Marshals](https://github.com/niqzart/pydantic-marshals)
+- А также: [Flask-Fullstack](https://github.com/niqzart/flask-fullstack) 0.5.10
 
 ### Начало и установка
 1. Создать публичный fork репозитория
@@ -31,16 +32,20 @@ poetry install
 - В проекте настроены тесты на [pytest](https://docs.pytest.org/en/7.3.x/) для удобства тестирования SIO-интерфейсов
 - Все тесты лежат в папке `tests`
 - Предопределённые фикстуры:
-  - `base_client`: тестовый flask-клиент (модифицирован в ffs) без авторизации
-  - `client`: тестовый flask-клиент, авторизованный под пользователем из `common/constants.py`
+  - `client`: тестовый flask-клиент (модифицирован в ffs)
   - `socketio_client`: тестовый socketio-клиент, созданный от `client`
-- Базовые тесты проверяют документацию, ошибки, авторизацию и выход из аккаунта
+- Базовые тесты проверяют документацию, ошибки и авторизацию
 - Запуск командой: `pytest tests`
 
 ## Задание
 Само задание будет кастомизированно для каждого!
 
 ## Рекомендации
+### Pydantic-Marshals
+Библиотека для автоматического создания частичных pydantic-моделей. В проекте используется для:
+- Создания валидаторов из SQLAlchemy-маппингов ([пример в readme](https://github.com/niqzart/pydantic-marshals#sqlalchemy-basic-usage))
+- Тестирования json-ответов приложения ([документация](https://github.com/niqzart/pydantic-marshals/blob/main/docs/assert-contains.md))
+
 ### Flask-Fullstack
 В проекте во всю мощь используется библиотека flask-fullstack (FFS). В ней есть частичная документация, но вот пример использования вытащить из проекта не удалось. Стоит прочитать документацию в файлах:
 - [Интерфейсы для БД](https://github.com/niqzart/flask-fullstack/blob/d54696b1b982015eb64790174d42bd21f7811a46/flask_fullstack/base/interfaces.py)
@@ -74,33 +79,7 @@ poetry install
 
 </details>
 
-<details>
-  <summary>FFS: Модели для marshalling-а</summary>
-
-  Реализуются через [Pydantic](https://github.com/samuelcolvin/pydantic), а точнее модификацию его модели из flask-fullstack: [PydanticModel](https://github.com/niqzart/flask-fullstack/blob/master/flask_fullstack/marshals.py#L426).
-  
-  Модели стоит создавать внутри тела класса, наследующего Base. Так её название заполнится автоматически и будет привязано к тому ORM-объекту, который она конвертирует. А для моделей, содержащих колонки БД всё ещё проще: в PydanticModel (и её потомках) объявлены статические методы для добавления к модели колонок (`column_model`). 
-  
-  Проще всего понять это через пример. Две модели внутри User, первая (IndexProfile) с id, username, bio и avatar, взятыми из соответствующих колонок, и вторая (FullProfile) со всеми полями первой и name, surname, patronymic и group, взятыми из соответствующих колонок:
-  ```py
-  IndexProfile = PydanticModel.column_model(id, username, bio, avatar)
-  FullProfile = IndexProfile.column_model(name, surname, patronymic, group)
-  ```
-
-  - Модели объявляются в теле класса, наследующего Base!
-  - Названия переменных нужно держать в `snake_case`, для json-а они будут автоматически конвертированы в `kebab-case`
-  - Регистрировать новые модели не нужно, достаточно просто использовать их в методах, вроде `.marshal_with` или `.lister`
-
-</details>
-
-<details>
-  <summary>FFS: SocketIO</summary>
-
-  Частично задокументированно [внутри проекта](https://github.com/xi-effect/xieffect-backend/pull/110), более отделённая документация появится позже...
-
-</details>
-
-[FFS: Assert Contains (для тестов)](https://github.com/niqzart/flask-fullstack/blob/master/docs/assert-contains.md)
+[FFS: SocketIO (частичная дока внутри проекта)](https://github.com/xi-effect/xieffect-backend/pull/110)
 
 ### Стиль кода
 - **Будет проверяться**
@@ -127,9 +106,8 @@ poetry install
 - [Flask Testing](https://flask.palletsprojects.com/en/2.0.x/testing/)
 
 ### SQLAlchemy:
-- [Полный туториал](https://docs.sqlalchemy.org/en/14/tutorial/index.html)
-- [Объявление таблиц в ORM](https://docs.sqlalchemy.org/en/14/tutorial/metadata.html#defining-table-metadata-with-the-orm)
-- [Манипуляции с данными](https://docs.sqlalchemy.org/en/14/tutorial/orm_data_manipulation.html)
-- [Отношения между таблицами](https://docs.sqlalchemy.org/en/14/orm/relationships.html)
-- [Related object](https://docs.sqlalchemy.org/en/14/tutorial/orm_related_objects.html)
-- [Multiple join paths](https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#handling-multiple-join-paths)
+- [Полный туториал](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
+- [Построение табличек](https://docs.sqlalchemy.org/en/20/tutorial/metadata.html#tutorial-orm-table-metadata)
+- [ORM Relationships](https://docs.sqlalchemy.org/en/20/tutorial/orm_related_objects.html)
+- [Insert-Update-Delete в ORM](https://docs.sqlalchemy.org/en/20/tutorial/orm_data_manipulation.html)
+- [Select в ORM](https://docs.sqlalchemy.org/en/20/orm/queryguide/select.html)
