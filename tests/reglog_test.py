@@ -11,6 +11,6 @@ def test_login(base_client: FlaskTestClient):
         "/sign-in/",
         json=TEST_CREDENTIALS,
         expected_json={"id": int, "username": TEST_USERNAME},
-        expected_headers={"Set-Cookie": constr(regex="access_token_cookie=.*")},
+        expected_headers={"Set-Cookie": constr(pattern="access_token_cookie=.*")},
     )
     base_client.post("/sign-out/")

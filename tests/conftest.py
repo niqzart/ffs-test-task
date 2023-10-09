@@ -28,7 +28,7 @@ def login(username: str, password: str) -> FlaskTestClient:
         response: TestResponse = client.post(
             "/sign-in/",
             data={"username": username, "password": password},
-            expected_headers={"Set-Cookie": constr(regex="access_token_cookie=.*")},
+            expected_headers={"Set-Cookie": constr(pattern="access_token_cookie=.*")},
             get_json=False,
         )
         client.set_cookie(
