@@ -1,22 +1,13 @@
 from __future__ import annotations
 
-from flask_fullstack import UserRole, PydanticModel, Identifiable
+from flask_fullstack import UserRole, Identifiable
 from passlib.hash import pbkdf2_sha256
-from sqlalchemy import Column, select
-from sqlalchemy.sql.sqltypes import Integer, String
+from pydantic_marshals.sqlalchemy import MappedModel
+from sqlalchemy import select
+from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.sql.sqltypes import String
 
-from .config import Base, db
-
-
-class BlockedToken(Base):
-    __tablename__ = "blocked_tokes"
-
-    id = Column(Integer, primary_key=True, unique=True)
-    jti = Column(String(36), nullable=False)
-
-    @classmethod
-    def find_by_jti(cls, jti) -> BlockedToken | None:
-        return db.get_first(select(cls).filter_by(jti=jti))
+from common.config import Base, db
 
 
 class User(Base, UserRole, Identifiable):
@@ -33,11 +24,11 @@ class User(Base, UserRole, Identifiable):
         return pbkdf2_sha256.verify(password, hashed)
 
     # Vital:
-    id: Column | int = Column(Integer, primary_key=True)
-    username: Column | str = Column(String(100), unique=True, nullable=False)
-    password: Column | str = Column(String(100), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(100), unique=True)
+    password: Mapped[str] = mapped_column(String(100))
 
-    MainData = PydanticModel.column_model(id, username)
+    MainData = MappedModel.create(columns=[id, username])
 
     @classmethod
     def find_by_id(cls, entry_id: int) -> User | None:

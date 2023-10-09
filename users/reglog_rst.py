@@ -1,10 +1,10 @@
 from flask import current_app
 from flask_fullstack import ResourceController
-from flask_jwt_extended import get_jwt
 from flask_restx import Resource
 from flask_restx.reqparse import RequestParser
 
-from common import User, BlockedToken, TEST_USERNAME
+from common.constants import TEST_USERNAME
+from common.users_db import User
 
 controller = ResourceController("reglog", path="/")
 
@@ -41,14 +41,6 @@ class Authorization(Resource):
         return "Wrong password"
 
 
-@controller.route("/home/")
-class HomeData(Resource):
-    @controller.jwt_authorizer(User)
-    @controller.marshal_with(User.MainData)
-    def get(self, user: User):
-        return user
-
-
 @controller.route("/go/")
 class Test(Resource):
     @controller.marshal_with_authorization(User.MainData)
@@ -59,12 +51,3 @@ class Test(Resource):
 
         user = User.find_by_username(TEST_USERNAME)
         return user, user
-
-
-@controller.route("/sign-out/")
-class Logout(Resource):
-    @controller.jwt_authorizer(User, check_only=True)
-    @controller.removes_authorization()
-    def post(self):
-        BlockedToken.create(jti=get_jwt()["jti"])
-        return True

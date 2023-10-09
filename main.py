@@ -2,8 +2,8 @@ from datetime import timedelta
 
 from flask_fullstack import SocketIO
 
-from common import app
-from users import reglog_namespace
+from common.config import app
+from users.reglog_rst import controller as reglog_namespace
 
 jwt = app.configure_jwt_with_loaders(
     ["cookies"],
