@@ -1,4 +1,5 @@
-from common import db, db_url, TEST_USERNAME, TEST_PASSWORD
+from common.config import db_url, db
+from common.constants import TEST_USERNAME, TEST_PASSWORD
 from main import app, socketio
 
 
