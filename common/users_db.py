@@ -6,8 +6,7 @@ from pydantic_marshals.sqlalchemy import MappedModel
 from sqlalchemy import select
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy.sql.sqltypes import String
-
-from common.config import Base, db
+from .config import Base, db
 
 
 class User(Base, UserRole, Identifiable):

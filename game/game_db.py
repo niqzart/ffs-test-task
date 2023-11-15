@@ -37,14 +37,14 @@ class Game(Base):
     IdModel = MappedModel.create(columns=[id, room_number])
 
     @staticmethod
-    def generate_room_code() -> str | None:
+    def generate_room_number() -> str | None:
         characters = string.ascii_lowercase + string.digits
         return ''.join(random.choices(characters, k=10))
 
     @classmethod
     def create(cls, game_id: int = None) -> Game | None:
-        room_code = cls.generate_room_code()
-        return super().create(room_code=room_code, id=game_id)
+        room_number = cls.generate_room_number()
+        return super().create(room_number=room_number, id=game_id)
 
     @classmethod
     def get_all(cls):
@@ -73,9 +73,9 @@ class GameModel(Base):
     option: Mapped[Options] = mapped_column(sqlalchemy.Enum(Options))
     result: Mapped[GameResults] = mapped_column((sqlalchemy.Enum(GameResults)))
 
-    MainData = MappedModel.create(columns=[id, game_id, user_id, option, result])
-    OptionModel = MappedModel.create(columns=[id, game_id, user_id, option, result])
-    ResultModel = MappedModel.create(columns=[id, game_id, user_id, option, result])
+    IdModel = MappedModel.create(columns=[id, game_id, user_id, result])
+    OptionModel = MappedModel.create(columns=[option])
+    ResultModel = MappedModel.create(columns=[result])
 
     @classmethod
     def create(cls, game_id: int, user_id: int, option: str = None, result: str = None) -> GameModel | None:
@@ -90,6 +90,12 @@ class GameModel(Base):
         return db.get_first(select(cls).filter_by(
             game_id=game_id,
             user_id=user_id))
+    
+    @classmethod
+    def find_enemy(cls, game_id: int, user_id: int) -> GameModel | None:
+        return db.get_first(select(cls).where(
+            game_id == game_id,
+            user_id != user_id))
     
     @classmethod
     def get_all(cls, user_id: int) -> list | None:
