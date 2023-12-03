@@ -4,7 +4,8 @@ from flask_fullstack import SocketIO
 
 from common.config import app
 from users.reglog_rst import controller as reglog_namespace
-from game import game_namespace, game_events
+from game.game_rst import controller as game_namespace
+from game.game_sio import controller as game_events
 
 jwt = app.configure_jwt_with_loaders(
     ["cookies"],
